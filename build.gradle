@@ -1,0 +1,54 @@
+/*
+
+sudo apt install default-jre gradle
+gradle clean build
+java --module-path build/deps/ --add-modules javafx.controls,javafx.fxml,commons.math3 --enable-native-access=javafx.graphics -jar build/libs/ImpactDetection.jar
+
+
+ */
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation ("org.apache.commons:commons-math3:3.6.1")
+    implementation("gov.nasa.gsfc.heasarc:nom-tam-fits:1.22.0")
+    implementation("org.openjfx:javafx-base:25:linux")
+    implementation("org.openjfx:javafx-graphics:25:linux")
+    implementation("org.openjfx:javafx-controls:25:linux")
+    implementation("org.openjfx:javafx-fxml:25:linux")
+    implementation("org.openjfx:javafx-swing:25:linux")
+    //implementation("org.openjfx:javafx-media:25:linux")
+    //implementation("org.openjfx:javafx-web:25:linux")
+}
+
+
+// Define the main class for the application
+mainClassName = 'sample.Main'
+
+//Define name of JAR file
+archivesBaseName = 'ImpactDetection'
+
+
+//Copy deps to some dir
+task copyDeps(type: Copy) {
+    from configurations.runtimeClasspath
+    into "$buildDir/deps"
+    include '*.jar'
+}
+build.dependsOn(copyDeps)
+
+//Produce JAR
+jar {
+    manifest {
+        attributes 'Main-Class': 'sample.Main'
+    }
+}
