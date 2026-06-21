@@ -500,6 +500,14 @@ public class Detection {
                 alert2.showAndWait();
         }
 
+        //Prevent OOM
+        System.out.println("Cleaning Memory...");
+        for (int i = 0; i < frames.length; i++) {
+            frames[i] = null;            // drop individual images
+        }
+        frames = null;                   // drop the array itself
+        System.gc();
+
         System.out.println("Detection completed.");
         String endTimeStamp = String.valueOf(new Timestamp((new Date()).getTime()));
 
